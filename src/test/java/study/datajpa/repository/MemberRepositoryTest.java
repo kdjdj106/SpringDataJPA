@@ -11,17 +11,22 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Transactional
 @Rollback(false)
 class MemberRepositoryTest {
 
-    @Autowired MemberRepository memberRepository;
-    @Autowired TeamRepository teamRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @DisplayName("스프링데이타 JPA")
     @Test
@@ -65,7 +70,7 @@ class MemberRepositoryTest {
 
 
     @Test
-    public void findByUsernameAndAgeGreaterThan() throws Exception{
+    public void findByUsernameAndAgeGreaterThan() throws Exception {
         //given
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
@@ -81,7 +86,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    public void testQueryFindUser() throws Exception{
+    public void testQueryFindUser() throws Exception {
         //given
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
@@ -94,7 +99,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    public void findMemberDto() throws Exception{
+    public void findMemberDto() throws Exception {
         //given
         Member m1 = new Member("AAA", 10);
         Member m2 = new Member("AAA", 20);
@@ -108,7 +113,40 @@ class MemberRepositoryTest {
         List<MemberDto> memberDto = memberRepository.findMemberDto();
         //then
         for (MemberDto dto : memberDto) {
-            System.out.println("dto = " + dto.getTeamName() + dto.getUsername()+ dto.getId());
+            System.out.println("dto = " + dto.getTeamName() + " " + dto.getUsername() + " " + dto.getId());
         }
     }
+
+    @Test
+    public void findByNames() throws Exception {
+        //given
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        //when
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
+        //then
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    @Test
+    public void returnType() throws Exception {
+        //given
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        //when
+        Member aaa = memberRepository.findMemberByUsername("AAA");
+        System.out.println("aaa = " + aaa);
+        Optional<Member> aaa1 = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("aaa1 = " + aaa1);
+        //then
+
+    }
+
+
 }
